@@ -1,0 +1,22 @@
+﻿<Window x:Class="Matplotlib.Net.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Matplotlib.Net"
+        mc:Ignorable="d"
+        SizeToContent="Manual"
+        Title="MainWindow" Height="600" Width="800">
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Top" >
+            <TextBox Height="100" x:Name="Script"/>
+            <Button Height="20" Click="ButtonBase_OnClick"/>
+        </StackPanel>
+        <Grid x:Name="grid" DockPanel.Dock="Bottom">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <local:MplPanel Grid.Row="0" Height="{Binding ActualHeight, ElementName=grid}" FocusManager.IsFocusScope="True"/>
+        </Grid>
+    </DockPanel>
+</Window>

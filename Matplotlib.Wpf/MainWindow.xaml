@@ -18,7 +18,9 @@
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <local:MplPanel Grid.ColumnSpan="2" Grid.Row="0" FocusManager.IsFocusScope="True"/>
+            <Border Grid.ColumnSpan="2" Grid.Row="0" BorderBrush="Red">
+                <local:MplPanel  FocusManager.IsFocusScope="True"/>
+            </Border>
             <TextBox Grid.Column="0" FontSize="18" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="2" Height="150" x:Name="Script"/>
             <Button Grid.Column="1" Grid.Row="2" Click="ButtonBase_OnClick">
                 Run python code

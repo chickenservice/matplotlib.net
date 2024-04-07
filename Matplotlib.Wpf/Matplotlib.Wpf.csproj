@@ -14,4 +14,10 @@
       <PackageReference Include="pythonnet" Version="3.0.3" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="backend_wpfagg.py">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>

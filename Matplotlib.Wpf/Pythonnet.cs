@@ -14,7 +14,7 @@ public static class Pythonnet
         Environment.SetEnvironmentVariable("PATH", path, EnvironmentVariableTarget.Process);
         Environment.SetEnvironmentVariable("PATH", pathToVirtualEnv, EnvironmentVariableTarget.Process);
         Environment.SetEnvironmentVariable("PYTHONHOME", pathToVirtualEnv, EnvironmentVariableTarget.Process);
-        Environment.SetEnvironmentVariable("PYTHONPATH", $"{pathToVirtualEnv}\\Lib\\site-packages;{pathToVirtualEnv}\\Lib;{pathToVirtualEnv}\\DLLs", EnvironmentVariableTarget.Process);
+        Environment.SetEnvironmentVariable("PYTHONPATH", $"{pathToVirtualEnv}\\Lib\\site-packages;{pathToVirtualEnv}\\Lib;{pathToVirtualEnv}\\DLLs;C:\\Users\\chickenservice\\Projects\\Matplotlib.Net\\Matplotlib.Wpf\\bin\\Debug\\net7.0-windows", EnvironmentVariableTarget.Process);
 
         Runtime.PythonDLL = $"{pathToVirtualEnv}/python312.dll";
         PythonEngine.PythonHome = pathToVirtualEnv;

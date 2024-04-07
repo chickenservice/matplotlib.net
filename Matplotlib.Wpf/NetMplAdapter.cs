@@ -6,35 +6,17 @@ namespace Matplotlib.Net;
 
 public class NetMplAdapter
 {
-    static NetMplAdapter()
+    public NetMplAdapter(PyObject manager, PyObject canvas)
     {
-        Pythonnet.Init();
-    }
-    
-    public NetMplAdapter(WriteableBitmap buffer)
-    {
-        AggBuffer = buffer;
-        using var _ = Py.GIL();
-        using var scope = Py.CreateScope();
-        var init = @"
-import matplotlib
-matplotlib.use('module://backend_wpfagg')
-import matplotlib.pyplot as plt
-plt.get_current_fig_manager()._set_net_mpl_adapter(adapter)
-";
-        scope.Exec(init, new Py.KeywordArguments { ["adapter"] =  this.ToPython()});
-        scope.Exec("import matplotlib");
-        FigManager = scope.Eval("matplotlib.pyplot.get_current_fig_manager()");
-        Canvas = scope.Eval("matplotlib.pyplot.get_current_fig_manager().canvas");
-        _lastHeight = AggBuffer.PixelHeight;
-        _lastWidth = AggBuffer.PixelWidth;
+        Canvas = canvas;
+        FigManager = manager;
         _white = 255 << 24;
         _white |= 255 << 16;
         _white |= 255 << 8;
         _white |= 255 << 0;
     }
 
-    private int _white; 
+    private readonly int _white; 
     private int _lastHeight;
     private int _lastWidth;
     private WriteableBitmap AggBuffer { get; set; }
@@ -121,6 +103,8 @@ plt.get_current_fig_manager()._set_net_mpl_adapter(adapter)
     public void SetBuffer(WriteableBitmap buffer)
     {
         AggBuffer = buffer;
+        _lastHeight = AggBuffer.PixelHeight;
+        _lastWidth = AggBuffer.PixelWidth;
     }
 
     public void SetFigureSize(double w, double h)

@@ -19,11 +19,16 @@ public partial class MainWindow : Window
     
     private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
     {
-        var txtbx  = (TextBox)FindName("Script");
         using var _ = Py.GIL();
         using var scope = Py.CreateScope();
-        scope.Exec("import matplotlib.pyplot as plt");
-        scope.Exec(txtbx.Text);
+        Mpl1.ExecPython(Script.Text);
+    }
+    
+    private void ButtonBase_OnClick2(object sender, RoutedEventArgs e)
+    {
+        using var _ = Py.GIL();
+        using var scope = Py.CreateScope();
+        Mpl2.ExecPython(Script2.Text);
     }
     
     private static string Colormesh = @"

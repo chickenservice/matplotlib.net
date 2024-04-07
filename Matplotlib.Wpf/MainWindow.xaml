@@ -16,14 +16,22 @@
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <Border Grid.ColumnSpan="2" Grid.Row="0" BorderBrush="Red">
-                <local:MplPanel  FocusManager.IsFocusScope="True"/>
-            </Border>
-            <TextBox Grid.Column="0" FontSize="18" TextWrapping="Wrap" AcceptsReturn="True" Grid.Row="2" Height="150" x:Name="Script"/>
-            <Button Grid.Column="1" Grid.Row="2" Click="ButtonBase_OnClick">
-                Run python code
-            </Button>
+            <local:MplPanel x:Name="Mpl1" Grid.Column="0" FocusManager.IsFocusScope="True"/>
+            <local:MplPanel x:Name="Mpl2" Grid.Row="0" Grid.Column="1" FocusManager.IsFocusScope="True"/>
+            <StackPanel Grid.Column="0" Grid.Row="2" Orientation="Horizontal">
+                <TextBox FontSize="18" TextWrapping="Wrap" AcceptsReturn="True" Height="150" MinWidth="150" x:Name="Script"/>
+                <Button Click="ButtonBase_OnClick" Width="50">
+                    Run python code
+                </Button>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal">
+                <TextBox FontSize="18" TextWrapping="Wrap" AcceptsReturn="True" Height="150" MinWidth="300" x:Name="Script2"/>
+                <Button Click="ButtonBase_OnClick2" Width="50">
+                    Run python code
+                </Button>
+            </StackPanel>
         </Grid>
 </Window>

@@ -19,6 +19,8 @@ from matplotlib.backend_bases import (
     FigureManagerBase, MouseEvent, MouseButton)
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 
+from Matplotlib.Net import NetMplAdapter
+
 
 class NavigationToolbar2WpfAgg(backend_bases.NavigationToolbar2):
     toolitems = [
@@ -36,12 +38,9 @@ class FigureManagerWpfAgg(FigureManagerBase):
     _toolbar2_class = NavigationToolbar2WpfAgg
 
     def __init__(self, canvas, num):
-        self._dotnet_manager = False
         super().__init__(canvas, num)
+        self._dotnet_manager = NetMplAdapter(self, canvas)
         self.toolbar.pan()
-
-    def _set_net_mpl_adapter(self, adapter):
-        self._dotnet_manager = adapter
 
     def handle_resize(self, w, h):
         fig = self.canvas.figure

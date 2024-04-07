@@ -3,23 +3,55 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Python.Runtime;
 
 namespace Matplotlib.Net;
 
 public class MplPanel : Panel
 {
-    private static NetMplAdapter _adapter;
+    private readonly NetMplAdapter _adapter;
     private WriteableBitmap _buffer = new(800, 600, 96, 96, PixelFormats.Pbgra32, null);
+    private readonly PyObject _axes;
+    private readonly PyObject _fig;
+
+    static MplPanel()
+    {
+        Pythonnet.Init();
+        using var _ = Py.GIL();
+        using var scope = Py.CreateScope();
+        scope.Exec("""
+
+                   import matplotlib
+                   matplotlib.use('module://backend_wpfagg')
+
+                   """
+        );
+    }
 
     public MplPanel()
     {
-        _adapter = new NetMplAdapter(_buffer);
+        using var _ = Py.GIL();
+        using var scope = Py.CreateScope();
+        scope.Exec("import matplotlib");
+        var figax = scope.Eval("matplotlib.pyplot.subplots()");
+        _adapter = figax[0].GetAttr("canvas").GetAttr("manager").GetAttr("_dotnet_manager").As<NetMplAdapter>();
+        _adapter.SetBuffer(_buffer);
+        _fig = figax[0];
+        _axes = figax[1];
+        
         MouseMove += HandleMouseMove;
         MouseLeftButtonDown += HandleMouseDown;
         MouseRightButtonDown += HandleMouseDown;
         MouseRightButtonUp += HandleMouseUp;
         MouseLeftButtonUp += HandleMouseUp;
         MouseWheel += HandleMouseWheel;
+    }
+
+    public void ExecPython(string code)
+    {
+        using var _ = Py.GIL();
+        using var scope = Py.CreateScope();
+        scope.Exec(code, new Py.KeywordArguments{["ax"] = _axes, ["fig"] = _fig});
     }
 
     private void HandleMouseWheel(object sender, MouseWheelEventArgs e)

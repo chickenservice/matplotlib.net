@@ -37,6 +37,11 @@ public class NetMplAdapter
         adapter._axes = figax[1];
         return adapter;
     }
+
+    public void Update()
+    {
+        panel.RenderPlot();
+    }
     
     /// <summary>
     /// GIL should not be acquired as this method should only be called from the python WpfAgg backend.
@@ -112,6 +117,7 @@ public class NetMplAdapter
         finally
         {
             AggBuffer.Unlock();
+            panel.RenderPlot();
         }
     }
 

@@ -16,10 +16,35 @@ e.g. ``import backend_wpfagg`` you can then select it using ::
 
 from matplotlib import backend_bases
 from matplotlib.backend_bases import (
-    FigureManagerBase, MouseEvent, MouseButton)
+    FigureManagerBase, MouseEvent, MouseButton, TimerBase)
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 
+from System.Windows.Threading import DispatcherTimer, DispatcherPriority
+from System import TimeSpan, EventHandler
+
 from Matplotlib.Net import NetMplAdapter
+
+
+
+
+class TimerWpf(TimerBase):
+    def __init__(self, *args, **kwargs):
+        self._timer = DispatcherTimer(DispatcherPriority.Render)
+        self._timer.Tick += EventHandler(self._on_tick)
+        super().__init__(*args, **kwargs)
+    
+    def _timer_start(self):
+        self._timer.Stop()
+        self._timer.Start()
+    
+    def _timer_stop(self):
+        self._timer.Stop()
+    
+    def _timer_set_interval(self):
+        self._timer.Interval = TimeSpan.FromMilliseconds(self._interval)
+    
+    def _on_tick(self, a, b):
+        super()._on_timer()
 
 
 class NavigationToolbar2WpfAgg(backend_bases.NavigationToolbar2):
@@ -52,15 +77,19 @@ class FigureManagerWpfAgg(FigureManagerBase):
 
     def show(self):
         if self._dotnet_manager is not None:
-            self.canvas.draw()
-            buf = self.canvas.buffer_rgba()
-            w, h = self.canvas.get_width_height()
-            self._dotnet_manager.Draw(buf, w, h)
+            self.canvas.draw_idle()
 
 
 class FigureCanvasWpf(FigureCanvasAgg):
     manager_class = FigureManagerWpfAgg
-
+    _timer_cls = TimerWpf
+    
+    def draw(self):
+        super().draw()
+        buf = self.buffer_rgba()
+        w, h = self.get_width_height()
+        self.manager._dotnet_manager.Draw(buf, w, h)
+    
     def handle_wheel(self, pos, delta):
         x, y = pos
         actual_y = self.figure.bbox.height - y

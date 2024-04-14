@@ -10,6 +10,7 @@ public class MplPanel : Panel
 {
     private readonly NetMplAdapter _adapter;
     private WriteableBitmap _buffer = new(800, 600, 96, 96, PixelFormats.Pbgra32, null);
+    private readonly DrawingGroup _plot = new();
 
     static MplPanel()
     {
@@ -35,6 +36,11 @@ public class MplPanel : Panel
         _adapter.Exec(code);
     }
 
+    public void Plot1D(double[] x, double[] y)
+    {
+        _adapter.Plot1D(x, y);
+    }
+
     private void HandleMouseWheel(object sender, MouseWheelEventArgs e)
     {
         var pos = e.GetPosition(this);
@@ -47,21 +53,24 @@ public class MplPanel : Panel
         var pos = e.GetPosition(this);
         _adapter.HandleMouseMove(pos, ButtonToMpl(e));
         if (e.RightButton == MouseButtonState.Pressed || e.LeftButton == MouseButtonState.Pressed)
-            InvalidateVisual();
+            RenderPlot();
+            //InvalidateVisual();
     }
     
     private void HandleMouseUp(object sender, MouseEventArgs e)
     {
         var pos = e.GetPosition(this);
         _adapter.HandleMouseUp(pos, ButtonToMpl(e));
-        InvalidateVisual();
+        RenderPlot();
+        //InvalidateVisual();
     }
 
     private void HandleMouseDown(object sender, MouseEventArgs e)
     {
         var pos = e.GetPosition(this);
         _adapter.HandleMouseDown(pos, ButtonToMpl(e));
-        InvalidateVisual();
+        RenderPlot();
+        //InvalidateVisual();
     }
 
     private static string ButtonToMpl(MouseEventArgs state)
@@ -77,6 +86,12 @@ public class MplPanel : Panel
     protected override void OnRender(DrawingContext dc)
     {
         base.OnRender(dc);
+        RenderPlot();
+        dc.DrawDrawing(_plot);
+    }
+
+    public void RenderPlot()
+    {
         var w = ActualWidth;
         var h = ActualHeight;
         if (w > 0 || h > 0)
@@ -90,6 +105,8 @@ public class MplPanel : Panel
             _adapter.SetFigureSize(w, h);
         }
 
+        var dc = _plot.Open();
         dc.DrawImage(_buffer, new Rect(new Point(), new Point(_buffer.PixelWidth, _buffer.PixelHeight)));
+        dc.Close();
     }
 }

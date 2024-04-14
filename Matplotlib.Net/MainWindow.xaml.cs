@@ -21,7 +21,8 @@ public partial class MainWindow : Window
     {
         using var _ = Py.GIL();
         using var scope = Py.CreateScope();
-        Mpl1.ExecPython(Script.Text);
+        //Mpl1.ExecPython(Script.Text);
+        Mpl2.ExecPython(GameOfLife);
     }
     
     private void ButtonBase_OnClick2(object sender, RoutedEventArgs e)
@@ -30,6 +31,51 @@ public partial class MainWindow : Window
         using var scope = Py.CreateScope();
         Mpl2.ExecPython(Script2.Text);
     }
+
+    private static string GameOfLife = @"
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+
+from scipy.signal import convolve2d
+
+
+
+#fig.set_figwidth(19.2)
+#fig.set_figheight(10.8)
+
+
+def init(n, ax):
+    import numpy as np
+    state = np.random.choice(a=[False, True], size=(n, n))*1
+    img = ax.imshow(state, interpolation='nearest', cmap='gray')
+
+    con = np.array([
+        [1, 1, 1],
+        [1, 0, 1],
+        [1, 1, 1]])
+
+    def game_of_life(state):
+        from scipy.signal import convolve2d
+        nghbd = convolve2d(state, con, mode='same')
+        state = (state*(nghbd == 2) + (nghbd == 3))
+        return state
+
+    def _update(frame):
+        nonlocal state
+        state = game_of_life(state*1)
+        img.set_array(state)
+        return img,
+
+    return state, _update
+
+s, update = init(100, ax)
+
+ani = animation.FuncAnimation(
+    fig=fig, func=update, frames=360, interval=30, blit=False, repeat=False)
+
+fig.canvas.draw()
+";
     
     private static string Colormesh = @"
 import matplotlib.pyplot as plt

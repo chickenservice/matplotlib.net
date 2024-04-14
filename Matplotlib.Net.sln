@@ -1,6 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Matplotlib.Wpf", "Matplotlib.Wpf\Matplotlib.Wpf.csproj", "{255A6188-1EF2-4230-9A14-A0EEA5662892}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Matplotlib.Net", "Matplotlib.Net\Matplotlib.Net.csproj", "{255A6188-1EF2-4230-9A14-A0EEA5662892}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{DD88444F-8B52-4222-A31D-EA3CAAE05315}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataBinding", "DataBinding\DataBinding.csproj", "{B8AEF63A-333F-4A4B-B67F-42F93B8A41B2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,5 +16,12 @@ Global
 		{255A6188-1EF2-4230-9A14-A0EEA5662892}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{255A6188-1EF2-4230-9A14-A0EEA5662892}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{255A6188-1EF2-4230-9A14-A0EEA5662892}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8AEF63A-333F-4A4B-B67F-42F93B8A41B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8AEF63A-333F-4A4B-B67F-42F93B8A41B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8AEF63A-333F-4A4B-B67F-42F93B8A41B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8AEF63A-333F-4A4B-B67F-42F93B8A41B2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B8AEF63A-333F-4A4B-B67F-42F93B8A41B2} = {DD88444F-8B52-4222-A31D-EA3CAAE05315}
 	EndGlobalSection
 EndGlobal

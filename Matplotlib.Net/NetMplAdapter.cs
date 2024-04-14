@@ -19,9 +19,24 @@ public class NetMplAdapter
     private readonly int _white; 
     private int _lastHeight;
     private int _lastWidth;
+    private PyObject _fig;
+    private PyObject _axes;
+    private MplPanel panel;
     private WriteableBitmap AggBuffer { get; set; }
     private PyObject FigManager { get; }
     private PyObject Canvas { get; }
+
+    public static NetMplAdapter Create()
+    {
+        using var _ = Py.GIL();
+        using var scope = Py.CreateScope();
+        scope.Exec("import matplotlib");
+        var figax = scope.Eval("matplotlib.pyplot.subplots()");
+        var adapter = figax[0].GetAttr("canvas").GetAttr("manager").GetAttr("_dotnet_manager").As<NetMplAdapter>();
+        adapter._fig = figax[0];
+        adapter._axes = figax[1];
+        return adapter;
+    }
     
     /// <summary>
     /// GIL should not be acquired as this method should only be called from the python WpfAgg backend.
@@ -72,7 +87,7 @@ public class NetMplAdapter
                 
                 AggBuffer.AddDirtyRect(new Int32Rect(width, 0, _lastWidth -  width, _lastHeight));
             }
-            
+
             for (int y = 0; y < height; y++)
             {
                 for (int x = 0; x < width; x++)
@@ -83,9 +98,9 @@ public class NetMplAdapter
                     var dstPtr = (byte*)(int*)dest;
                     byte* srcPtr = source + pyStrides * y + 4 * x;
                     byte a = *(srcPtr + 3);
-                    *(dstPtr++) = (byte)(*(srcPtr + 2) * a / 256); // pre-multiplied B
-                    *(dstPtr++) = (byte)(*(srcPtr + 1) * a / 256); // pre-multiplied G
-                    *(dstPtr++) = (byte)(*srcPtr * a / 256); // pre-multiplied R
+                    *(dstPtr++) = (byte)(*(srcPtr + 2) * a / 256);
+                    *(dstPtr++) = (byte)(*(srcPtr + 1) * a / 256);
+                    *(dstPtr++) = (byte)(*srcPtr * a / 256);
                     *(dstPtr++) = a;
                 }
             }
@@ -152,5 +167,38 @@ public class NetMplAdapter
         p.Append(pos.X.ToPython());
         p.Append(pos.Y.ToPython());
         Canvas.InvokeMethod("handle_wheel", new [] {p, eDelta.ToPython()});
+    }
+
+    public void Exec(string code)
+    {
+        using var _ = Py.GIL();
+        using var scope = Py.CreateScope();
+        scope.Exec(code, new Py.KeywordArguments{["ax"] = _axes, ["fig"] = _fig});
+    }
+
+    public void Plot1D(double[] x, double[] y)
+    {
+        using var _ = Py.GIL();
+        using var scope = Py.CreateScope();
+        scope.Exec("ax.plot(x, y);fig.show()", new Py.KeywordArguments{["ax"] = _axes, ["fig"] = _fig, ["x"] = x.ToPython(), ["y"] = y.ToPython()});
+    }
+
+    public static void Init()
+    {
+        Pythonnet.Init();
+        using var _ = Py.GIL();
+        using var scope = Py.CreateScope();
+        scope.Exec("""
+
+                   import matplotlib
+                   matplotlib.use('module://backend_wpfagg')
+
+                   """
+        );
+    }
+
+    public void SetRef(MplPanel mplPanel)
+    {
+        this.panel = mplPanel;
     }
 }

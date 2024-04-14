@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Net;
+using System.Windows;
 using System.Windows.Media.Imaging;
 using Python.Runtime;
 
@@ -31,16 +33,12 @@ public class NetMplAdapter
         using var _ = Py.GIL();
         using var scope = Py.CreateScope();
         scope.Exec("import matplotlib");
+        scope.Exec("import matplotlib.pyplot");
         var figax = scope.Eval("matplotlib.pyplot.subplots()");
         var adapter = figax[0].GetAttr("canvas").GetAttr("manager").GetAttr("_dotnet_manager").As<NetMplAdapter>();
         adapter._fig = figax[0];
         adapter._axes = figax[1];
         return adapter;
-    }
-
-    public void Update()
-    {
-        panel.RenderPlot();
     }
     
     /// <summary>

@@ -25,8 +25,6 @@ from System import TimeSpan, EventHandler
 from Matplotlib.Net import NetMplAdapter
 
 
-
-
 class TimerWpf(TimerBase):
     def __init__(self, *args, **kwargs):
         self._timer = DispatcherTimer(DispatcherPriority.Render)

@@ -50,27 +50,23 @@ public class MplPanel : Panel
 
     private void HandleMouseMove(object sender, MouseEventArgs e)
     {
-        var pos = e.GetPosition(this);
-        _adapter.HandleMouseMove(pos, ButtonToMpl(e));
         if (e.RightButton == MouseButtonState.Pressed || e.LeftButton == MouseButtonState.Pressed)
-            RenderPlot();
-            //InvalidateVisual();
+        {
+            var pos = e.GetPosition(this);
+            _adapter.HandleMouseMove(pos, ButtonToMpl(e));
+        }
     }
     
     private void HandleMouseUp(object sender, MouseEventArgs e)
     {
         var pos = e.GetPosition(this);
         _adapter.HandleMouseUp(pos, ButtonToMpl(e));
-        RenderPlot();
-        //InvalidateVisual();
     }
 
     private void HandleMouseDown(object sender, MouseEventArgs e)
     {
         var pos = e.GetPosition(this);
         _adapter.HandleMouseDown(pos, ButtonToMpl(e));
-        RenderPlot();
-        //InvalidateVisual();
     }
 
     private static string ButtonToMpl(MouseEventArgs state)
